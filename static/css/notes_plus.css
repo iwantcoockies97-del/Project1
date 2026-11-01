@@ -1,0 +1,457 @@
+/* notes_plus.css — нагадування, кольори, закріплення, пошук, чеклісти.
+   Підключається після theme.css; нічого зі старого не видаляє. */
+
+.note > div:first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ---------- кольори стікерів ---------- */
+
+.note.c-yellow { background: #fff3a8; }
+.note.c-pink   { background: #ffd6e0; }
+.note.c-mint   { background: #cdf3e0; }
+.note.c-blue   { background: #cfe3fe; }
+
+/* ---------- закріплена нотатка: кнопка-шпилька замість скотчу ---------- */
+
+.note.is-pinned::before {
+    top: -13px;
+    width: 26px;
+    height: 26px;
+    margin-left: -13px;
+    background: radial-gradient(circle at 35% 30%, #ff8a97 0, #d7263d 55%, #8d1426 100%);
+    border-radius: 50%;
+    clip-path: none;
+    transform: none;
+    box-shadow: 0 5px 6px rgba(14, 26, 58, 0.4);
+}
+
+/* ---------- ряд інструментів під текстом нотатки ---------- */
+
+.np-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.np-tool {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px 5px;
+    border: 1.5px solid rgba(31, 58, 147, 0.3);
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.55);
+    color: var(--ink-text, #1b2557);
+    font: 500 13px/1.2 var(--font-body, sans-serif);
+    cursor: pointer;
+    transition: background-color 0.12s, border-color 0.12s;
+}
+
+.np-tool:hover {
+    background: var(--marker, #ffe066);
+    border-color: #d9b800;
+}
+
+.np-tool svg {
+    width: 15px;
+    height: 15px;
+    flex: none;
+}
+
+.np-tool.has {
+    background: var(--marker, #ffe066);
+    border-color: #d9b800;
+}
+
+.np-tool.due {
+    background: #ffd3d9;
+    border-color: var(--red-pen, #d7263d);
+    color: #8d1426;
+}
+
+.np-tool.due svg {
+    animation: npRing 0.9s ease-in-out infinite;
+    transform-origin: 50% 10%;
+}
+
+.np-tool.done {
+    background: #d8efd0;
+    border-color: #7fb26b;
+    color: #2c5a1d;
+}
+
+.np-tool.on {
+    background: var(--ink, #1f3a93);
+    border-color: var(--ink, #1f3a93);
+    color: #fff;
+}
+
+@keyframes npRing {
+    0%, 60%, 100% { transform: rotate(0); }
+    10% { transform: rotate(18deg); }
+    20% { transform: rotate(-16deg); }
+    30% { transform: rotate(12deg); }
+    40% { transform: rotate(-9deg); }
+    50% { transform: rotate(5deg); }
+}
+
+.note.is-due {
+    animation: npShake 0.6s ease-in-out 2;
+}
+
+@keyframes npShake {
+    0%, 100% { translate: 0 0; }
+    20% { translate: -4px 0; }
+    40% { translate: 4px 0; }
+    60% { translate: -3px 0; }
+    80% { translate: 2px 0; }
+}
+
+/* ---------- чекліст усередині нотатки ---------- */
+
+.np-line {
+    min-height: 1.2em;
+}
+
+.np-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 3px 0;
+    cursor: pointer;
+}
+
+.np-check input {
+    appearance: none;
+    -webkit-appearance: none;
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin: 1px 0 0;
+    padding: 0;
+    border: 2px solid var(--ink, #1f3a93);
+    border-radius: 3px;
+    background: #fff;
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+}
+
+.np-check input::before {
+    content: "";
+    width: 10px;
+    height: 5px;
+    border-left: 3px solid #fff;
+    border-bottom: 3px solid #fff;
+    transform: translateY(-1px) rotate(-45deg) scale(0);
+    transition: transform 0.12s;
+}
+
+.np-check input:checked {
+    background: var(--ink, #1f3a93);
+}
+
+.np-check input:checked::before {
+    transform: translateY(-1px) rotate(-45deg) scale(1);
+}
+
+.np-check input:focus-visible {
+    outline: 3px solid var(--marker, #ffe066);
+    outline-offset: 2px;
+}
+
+.np-check.done span {
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--ink, #1f3a93);
+    opacity: 0.55;
+}
+
+.np-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft, #55608f);
+    font-variant-numeric: tabular-nums;
+}
+
+.np-progress i {
+    flex: 1;
+    max-width: 180px;
+    height: 6px;
+    background: rgba(31, 58, 147, 0.15);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.np-progress i b {
+    display: block;
+    height: 100%;
+    background: var(--stamp, #4b6b35);
+    border-radius: 3px;
+    transition: width 0.25s;
+}
+
+/* ---------- пошук ---------- */
+
+.np-search {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 14px;
+    margin: -6px 0 22px;
+}
+
+.np-search input {
+    flex: 1 1 220px;
+    width: auto;
+    margin: 0;
+}
+
+.np-count {
+    margin: 0 !important;
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.np-count.on {
+    background: var(--ink, #1f3a93);
+    color: #fff;
+}
+
+.np-hide {
+    display: none !important;
+}
+
+.np-noresult {
+    padding: 28px 12px;
+    text-align: center;
+    font-family: var(--font-hand, "Caveat", cursive);
+    font-size: 30px;
+    color: var(--ink-soft, #55608f);
+}
+
+/* ---------- нагадування в формі додавання ---------- */
+
+.np-formrow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 2px 0 14px;
+}
+
+.np-formrow > span {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft, #55608f);
+}
+
+.np-formrow input {
+    flex: 1 1 190px;
+    width: auto;
+    margin: 0;
+    font-size: 15px;
+}
+
+/* ---------- діалог нагадування ---------- */
+
+.np-dlg-note {
+    margin: 0 0 14px;
+    font-weight: 600;
+    color: var(--ink-soft, #55608f);
+}
+
+.np-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.np-chips .np-tool {
+    padding: 6px 12px 7px;
+    font-size: 14px;
+}
+
+.np-field {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft, #55608f);
+}
+
+.np-field input {
+    margin-top: 4px;
+}
+
+.np-hint {
+    min-height: 2.6em;
+    margin: 4px 0 14px;
+    font-size: 13px;
+    line-height: 1.35;
+    color: var(--ink-soft, #55608f);
+}
+
+.np-hint.bad {
+    color: var(--red-pen, #d7263d);
+    font-weight: 600;
+}
+
+/* ---------- палітра ---------- */
+
+.np-palette {
+    position: fixed;
+    z-index: 2147481500;
+    display: flex;
+    gap: 8px;
+    padding: 8px 10px;
+    background: #fff;
+    border: 2px solid var(--ink, #1f3a93);
+    border-radius: 3px;
+    box-shadow: 0 10px 20px -8px rgba(14, 26, 58, 0.5);
+}
+
+.np-dot {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 2px solid rgba(14, 26, 58, 0.35);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.np-dot:hover {
+    transform: scale(1.15);
+}
+
+.np-dot.sel {
+    border-color: var(--ink, #1f3a93);
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--ink, #1f3a93);
+}
+
+/* ---------- спливаюче нагадування (жовтий стікер) ---------- */
+
+.np-toasts {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 2147481000;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    pointer-events: none;
+}
+
+.np-toast {
+    position: relative;
+    width: min(330px, calc(100vw - 36px));
+    padding: 24px 18px 16px;
+    background: #fff3a8;
+    border-radius: 3px;
+    box-shadow: 0 18px 28px -14px rgba(14, 26, 58, 0.7);
+    transform: rotate(1.4deg);
+    pointer-events: auto;
+    animation: npPop 0.55s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+
+.np-toast::before {
+    content: "";
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    width: 86px;
+    height: 22px;
+    margin-left: -43px;
+    background: rgba(255, 255, 255, 0.7);
+    transform: rotate(-2deg);
+    clip-path: polygon(0 8%, 4% 0, 8% 10%, 12% 0, 88% 0, 92% 10%, 96% 0, 100% 8%, 100% 92%, 96% 100%, 92% 90%, 88% 100%, 12% 100%, 8% 90%, 4% 100%, 0 92%);
+}
+
+@keyframes npPop {
+    0% { transform: translateY(40px) rotate(-6deg) scale(0.8); opacity: 0; }
+    100% { transform: rotate(1.4deg); opacity: 1; }
+}
+
+.np-toast small {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #8a6d00;
+}
+
+.np-toast h4 {
+    margin: 2px 0 4px;
+    font-family: var(--font-hand, "Caveat", cursive);
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1;
+    color: var(--ink, #1f3a93);
+}
+
+.np-toast p {
+    margin: 0 0 12px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--ink-text, #1b2557);
+    max-height: 4.2em;
+    overflow: hidden;
+    white-space: pre-line;
+}
+
+.np-toast-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.np-toast-btns .btn {
+    padding: 7px 12px 8px;
+    font-size: 13px;
+}
+
+.np-snack {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    z-index: 2147481800;
+    transform: translateX(-50%);
+    max-width: calc(100vw - 32px);
+    padding: 10px 18px 11px;
+    background: var(--ink, #1f3a93);
+    color: #fff;
+    border-radius: 3px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 12px 20px -8px rgba(14, 26, 58, 0.6);
+    animation: npSnack 0.25s ease-out;
+}
+
+@keyframes npSnack {
+    from { opacity: 0; transform: translate(-50%, 12px); }
+}
+
+@media (max-width: 500px) {
+    .np-toasts {
+        right: 12px;
+        bottom: 12px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .np-tool.due svg,
+    .note.is-due {
+        animation: none;
+    }
+}

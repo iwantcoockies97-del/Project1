@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Нотатки</title>
+    <link rel="stylesheet" href="/static/css/notes.css">
+  <link rel="stylesheet" href="/static/css/theme.css">
+    <link rel="stylesheet" href="/static/css/dog.css">
+    <link rel="stylesheet" href="/static/css/fun.css">
+    <link rel="stylesheet" href="/static/css/notes_plus.css">
+    </head>
+  <body>
+    <div class="wrap">
+
+      <div class="top">
+        <div>
+          <h1>Нотатки</h1>
+          <span class="count">Всього: {{ notes|length }}</span>
+        </div>
+        <button class="btn btn-green" onclick="callTcc()">Подзвонити в ТЦК</button>
+      </div>
+
+      <div class="card">
+        <input id="title" placeholder="Заголовокк">
+        <textarea id="text" placeholder="Текст нотатки"></textarea>
+        <button class="btn" onclick="addNote()">Додати нотатку</button>
+      </div>
+
+      {% for note in notes %}
+      <div class="card note">
+        <div>
+          <h3>{{ note.title }}</h3>
+          <p>{{ note.text }}</p>
+        </div>
+        <div class="actions">
+          <button class="btn btn-gray" onclick="editNote({{ note.id }})">Змінити</button>
+          <button class="btn btn-red" onclick="deleteNote({{ note.id }})">Видалити</button>
+        </div>
+      </div>
+      {% else %}
+      <div class="card empty">Нотаток поки немає</div>
+      {% endfor %}
+
+    </div>
+
+    <dialog id="editDialog">
+      <h2>Змінити нотатку</h2>
+      <input id="editTitle" placeholder="Заголовое">
+      <textarea id="editText" placeholder="Текст нотатки"></textarea>
+      <div class="dialog-btns">
+        <button class="btn btn-gray" onclick="editDialog.close()">Скасувати</button>
+        <button class="btn" onclick="saveNote()">Зберегти</button>
+      </div>
+    </dialog>
+
+    <dialog id="tccDialog">
+      <img class="tcc-img" src="/static/img/tcc.png" alt="ТЦК">
+      <div class="dialog-btns">
+        <a class="btn btn-green" href="tel:{{ phone }}">Набрати ще раз</a>
+        <button class="btn btn-gray" onclick="tccDialog.close()">Закрити</button>
+      </div>
+    </dialog>
+
+    <script>
+      const headers = { "Content-Type": "application/json" };
+      let editId = null;
+
+      async function addNote() {
+        const title = document.getElementById("title").value;
+        const text = document.getElementById("text").value;
+        if (!title) {
+          alert("Введи заголовок");
+          return;
+        }
+        await fetch("/api/notes", {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify({ title: title, text: text })
+        });
+        location.reload();
+      }
+
+      async function editNote(id) {
+        const res = await fetch("/api/notes/" + id);
+        const note = await res.json();
+
+        editId = id;
+        document.getElementById("editTitle").value = note.title;
+        document.getElementById("editText").value = note.text;
+        editDialog.showModal();
+      }
+
+      async function saveNote() {
+        const title = document.getElementById("editTitle").value;
+        const text = document.getElementById("editText").value;
+        if (!title) {
+          alert("Введи заголовок");
+          return;
+        }
+        await fetch("/api/notes/" + editId, {
+          method: "PUT",
+          headers: headers,
+          body: JSON.stringify({ title: title, text: text })
+        });
+        location.reload();
+      }
+
+      function callTcc() {
+        tccDialog.showModal();
+        window.location.href = "tel:{{ phone }}";
+      }
+
+      async function deleteNote(id) {
+        if (!confirm("Видалити нотатку?")) return;
+        await fetch("/api/notes/" + id, { method: "DELETE" });
+        location.reload();
+      }
+    </script>
+  <script src="/static/js/dog.js" defer></script>
+    <script src="/static/js/fun.js" defer></script>
+    <script src="/static/js/notes_plus.js" defer></script>
+    </body>
+</html>

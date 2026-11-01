@@ -1,0 +1,146 @@
+/* dog.css — пес, який з'їдає сторінку по натисканню G */
+
+#dog-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 2147483000;
+}
+
+#dog-layer canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* суцільна заливка столу, коли все з'їдено */
+#dog-veil {
+    position: absolute;
+    inset: 0;
+    background: var(--desk, #0e1a3a);
+    opacity: 0;
+}
+
+.dog {
+    position: absolute;
+    left: 0;
+    top: 0;
+    aspect-ratio: 500 / 520;
+    will-change: transform;
+    filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.28));
+}
+
+.dog-inner {
+    position: absolute;
+    inset: 0;
+    transform-origin: 24% 58%;
+    will-change: transform;
+}
+
+/* обидва кадри лежать один на одному, голова вирівняна по оку */
+.dog-inner img {
+    position: absolute;
+    display: block;
+    height: auto;
+    user-select: none;
+    -webkit-user-drag: none;
+    /* м'яко ховаємо обрізані краї фото (справа і знизу) */
+    -webkit-mask-image:
+        linear-gradient(to bottom, #000 82%, transparent 100%),
+        linear-gradient(to right, #000 86%, transparent 100%);
+    mask-image:
+        linear-gradient(to bottom, #000 82%, transparent 100%),
+        linear-gradient(to right, #000 86%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+}
+
+.dog-inner .f-closed {
+    left: 2%;
+    top: 0;
+    width: 93.6%;
+}
+
+.dog-inner .f-open {
+    left: 0;
+    top: 7.5%;
+    width: 98.4%;
+    visibility: hidden;
+}
+
+.dog[data-open="1"] .f-closed { visibility: hidden; }
+.dog[data-open="1"] .f-open   { visibility: visible; }
+
+.crumb {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+/* ---------- другий пес і комок сторінки ---------- */
+
+.poop-dog,
+.lump,
+.lump-hint {
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.poop-dog {
+    transform-origin: 50% 100%;
+    will-change: transform;
+    filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.35));
+}
+
+.poop-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.lump {
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    pointer-events: auto;
+    will-change: transform;
+    filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.4));
+}
+
+.lump canvas {
+    display: block;
+    transition: transform 0.15s;
+}
+
+.lump:hover canvas,
+.lump:focus-visible canvas {
+    transform: scale(1.12) rotate(-6deg);
+}
+
+.lump:focus-visible {
+    outline: 3px solid var(--marker, #ffe066);
+    outline-offset: 4px;
+    border-radius: 50%;
+}
+
+.lump-hint {
+    transform: translate(-50%, 0);
+    font-family: var(--font-hand, "Caveat", cursive);
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 1;
+    color: var(--paper, #f5f7f2);
+    pointer-events: none;
+    opacity: 0;
+    white-space: nowrap;
+}

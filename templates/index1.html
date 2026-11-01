@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index1 Jinja2</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+<body>
+    <ul>
+        {% for item in tasks %}
+            {% if item.id %}
+            <li>{{ item.title}}</li>
+            <span>Deadline: {{ item.deadline }}</span>
+        {% endfor %}
+    </ul>
+</body>
+</html>
